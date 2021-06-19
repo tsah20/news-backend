@@ -1,6 +1,9 @@
 // Import statements
 require('dotenv').config()
 const express = require('express')
+const topRecentNewsRouter = require('./routes/topnews')
+const searchRouter = require('./routes/search')
+const metadataRouter = require('./routes/metadata')
 
 // Express application
 const app = express()
@@ -16,6 +19,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   next()
 })
+// Endpoints routing
+app.use('/top-recent-news', topRecentNewsRouter)
+app.use('/search', searchRouter)
+app.use('/metadata', metadataRouter)
 
 // Starting the server
 app.listen(process.env.PORT)
