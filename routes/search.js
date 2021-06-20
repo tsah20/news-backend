@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const searchController = require('../controllers/search')
 
-router.post('/', (req, res, next) => {
-    //language, sorting and pagination supported
-});
+const router = express.Router()
+
+router.post('/', searchController.searchNews)
 
 module.exports = router
