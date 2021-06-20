@@ -3,6 +3,6 @@ const topNewsController = require('../controllers/topnews')
 
 const router = express.Router()
 
-router.post('/', topNewsController.getTopNews)
+router.post('/', topNewsController)
 
 module.exports = router
