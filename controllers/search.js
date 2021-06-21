@@ -1,57 +1,37 @@
-var request = require('request')
+const axios = require('axios')
 
-const getSearchUrl = (language, page, pageSize, filters) => {
-  // construct basic query url
-  let queryUrl = `${process.env.API_BASE_URL}everything?language=${language}&page=${page}&pageSize=${pageSize}`
+const { API_BASE_URL, API_KEY } = process.env
 
-  // add filters as GEt parameters to the query
-  for (const f in filters) {
-    if (filters[f] != undefined) {
-      queryUrl = `${queryUrl}&${f}=${filters[f]}`
+const searchNews = async (req, res, next) => {
+  const { language = 'en', page = '1', pageSize = '5', q } = req.query
+
+  const qs = {
+    params: {
+      language,
+      page,
+      pageSize,
+      q
     }
-  }
-
-  // add api key to the query url
-  queryUrl = `${queryUrl}&apiKey=${process.env.API_KEY}`
-
-  return queryUrl
-}
-
-exports.searchNews = (req, res, next) => {
-  //language
-  let language = req.body.language ? req.body.language : 'en'
-
-  //page
-  let page = req.body.page ? req.body.page : 1
-  page = parseInt(page)
-
-  //page size
-  let pageSize = req.body.pageSize ? req.body.pageSize : 10
-  pageSize = parseInt(pageSize)
-
-  // contructing the filters
-  const filters = {
-    q: req.body.keyword
   }
 
   // query the service
-  const queryUrl = getSearchUrl(language, page, pageSize, filters)
+  const url = `${API_BASE_URL}top-headlines?apiKey=${API_KEY}`
 
-  //make the request to the news api.
-  request(queryUrl, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      console.log(`Request to ${queryUrl} Successful!`)
-      body = JSON.parse(body)
-      data = {
-        totalResults: body['totalResults'],
-        page: page,
-        pageSize: pageSize,
-        articles: body['articles']
-      }
-      res.status(200).json(data)
-    } else {
-      console.log(`Request to ${queryUrl} failed!`)
-      res.status(response.statusCode)
-    }
-  })
+  // make the request to the news api.
+  try {
+    const response = await axios.get(url, qs)
+    const { totalResults, articles } = response.data
+
+    return res.status(200).json({
+      totalResults,
+      page,
+      pageSize,
+      articles
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: 'something went wrong!' })
+  }
 }
+
+module.exports = searchNews
