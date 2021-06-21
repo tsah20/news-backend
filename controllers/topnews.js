@@ -3,7 +3,7 @@ const axios = require('axios')
 const { API_BASE_URL, API_KEY } = process.env
 
 const getTopNews = async (req, res, next) => {
-  const { language = 'en', page = 1, pageSize = 10, country, category } = req.query
+  const { language = 'en', page = '1', pageSize = '5', country, category } = req.query
 
   const qs = {
     params: {

@@ -1,47 +1,43 @@
-const request = require('supertest');
-require('dotenv').config();
-const express = require('express');
-const searchRoute = require('../routes/search');
+require('dotenv').config()
+const request = require('supertest')
+const express = require('express')
+const searchRoute = require('../routes/search')
 
 // Express application
-const app = express();
+const app = express()
 
 // Enabling json support and encoding the url.
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 // CORS
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  next()
+})
 
-app.use('/search', searchRoute);
+app.use('/search', searchRoute)
 
 describe('Search Endpoint Route Test Suite', () => {
-  const req = jest.fn();
+  const req = jest.fn()
 
   beforeAll(() => {
-    jest.spyOn(global.console, 'error').mockImplementation(() => {});
+    jest.spyOn(global.console, 'error').mockImplementation(() => {})
 
     req.query = {
-      q: '',
-    };
-  });
+      q: ''
+    }
+  })
 
   afterAll(() => {
-    global.console.error.mockRestore();
-  });
+    global.console.error.mockRestore()
+  })
 
   test('Search Query can be empty', async () => {
-    const { status } = await request(app)
-      .get('/search')
-      .query(req.query)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/);
+    const { status } = await request(app).get('/search').query(req.query).set('Accept', 'application/json').expect('Content-Type', /json/)
 
-    expect(status).toBe(200);
-  });
-});
+    expect(status).toBe(200)
+  })
+})
